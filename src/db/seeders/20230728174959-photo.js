@@ -13,14 +13,11 @@ module.exports = {
 		 * }], {});
 		 */
 		return await queryInterface.bulkInsert(
-			'Posts',
+			'Photos',
 			[
 				{
-					title: 'Build an app',
-					description:
-						'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-					photoCount: 0,
-					userId: 1,
+					name: 'image.jpg',
+					postId: 1,
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
@@ -36,6 +33,6 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.bulkDelete('People', null, {});
 		 */
-		return await queryInterface.bulkDelete('Posts', null, {});
+		return await queryInterface.bulkDelete('Photos', null, {});
 	},
 };

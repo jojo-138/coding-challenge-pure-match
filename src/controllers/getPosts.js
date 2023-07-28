@@ -1,42 +1,46 @@
-const getPhoto = require('../lib/getPhoto');
+const getPhoto = require('../lib/s3/getPhoto');
+const getTimeDiff = require('../lib/getTimeDiff');
 const User = require('../db/models').User;
 const Post = require('../db/models').Post;
+const Photo = require('../db/models').Photo;
 
 module.exports = async (req, res, client) => {
 	try {
+		const postRes = [];
 		const posts = await Post.findAll({
-			attributes: ['title', 'description', 'photo'],
+			attributes: ['id', 'title', 'description', 'createdAt'],
 			order: [['createdAt', 'DESC']],
 			include: [
 				{
 					model: User,
 					attributes: ['name'],
 				},
+				{ model: Photo, attributes: ['id', 'name'] },
 			],
 		});
-		const photoNames = posts.map((post) => post.dataValues.photo);
-		const photoUrlList = [];
 
-		for (const photoName of photoNames) {
-			if (photoName && photoName.length) {
+		for (const post of posts) {
+			const { id, title, description, createdAt, Photos: photos, User: user } = post.dataValues;
+			const res = {
+				id: id,
+				title: title,
+				description: description,
+				photos: [],
+				postedBy: user.dataValues.name,
+				timeDifference: getTimeDiff(new Date(), createdAt),
+			};
+
+			for (const photo of photos) {
+				const { id, name } = photo.dataValues;
 				// get photo url from storage
-				const photoUrl = await getPhoto(photoName, client);
-				photoUrlList.push(photoUrl);
-			} else {
-				photoUrlList.push(null);
+				const url = await getPhoto(name, client);
+				res.photos.push({ id, name, url });
 			}
+
+			postRes.push(res);
 		}
 
-		const postRes = posts.map((post, i) => {
-			return {
-				title: post.dataValues.title,
-				description: post.dataValues.description,
-				photo: photoUrlList[i],
-				postedBy: post.dataValues.User.dataValues.name,
-			};
-		});
-
-		return res.send({ posts: [...postRes] });
+		return res.send({ posts: postRes });
 	} catch (e) {
 		// console.log(e.message);
 		return res.status(500).end();
