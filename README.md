@@ -5,6 +5,7 @@
 | Initial commit | main         | Project setup                                                                                                                          |
 | Requirement 1  | requirement1 | created routes and middleware; set up sequelize; updated README.md                                                                     |
 | Requirement 2  | requirement2 | added time difference for posts; modified `Posts` table; added `Photos` table; added `PUT` and `DELETE` endpoints for posts and photos |
+| Requirement 3  | requirement3 | added comments to posts; added pagination to posts and comments; added optional addition of username                                   |
 
 ## Approach :thought_balloon:
 
@@ -38,6 +39,12 @@
 <br>
 
 **Requirement 3:**
+
+- `Comments` table is created to save comments made on posts, connected to `Posts` and `Users` tables with `postId` and `userId` foreign keys.
+- Comments pagination is modeled from Instagram comments. When a button to view comments is clicked, the first `n` latest comments are fetched. When a user clicks a button to view more comments, an API call to `GET /comments/:postId/:limit/:offset?` is called and fetches the next `n` latest comments and so on.
+- `GET /posts` API endpoint is changed to `GET /posts/:limit/:offset?` and Sequelize query is modified to include limit and offset to add pagination to posts.
+- `PUT /username` API endpoint is created to allow existing users to optionally add a username to their account.
+- The `Users` table is modified to add a `username` column using a migration file and the `User` model is changed to reflect this change.
 
 ## Screenshots :camera:
 
@@ -96,3 +103,45 @@
 - `DELETE /photos` 400 error - Photos and postId do not correlate and nothing is destroyed
 
 ![delete-photos-error](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/58e78724-0175-4ff8-82a3-3c6e1c8b1f02)
+
+**Requirement 3:**
+
+- `GET /posts/:limit/:offset?`
+
+Page 1:
+
+![updated-get-posts](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/e186339f-9847-4e82-98ab-36db0bf77d9a)
+
+Page 2:
+
+![updated-get-posts2](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/5ab3b129-8523-4f3f-b871-802fac8d1ae5)
+
+- `GET /comments/:postId/:limit/:offset?`
+
+Page 1:
+
+![get-comments1](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/30a7aa2e-6142-4c2a-9225-b2ced8ea93ae)
+
+Page 2:
+
+![get-comments2](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/94d7d708-3dbe-4c54-ab09-1de5a625d7e3)
+
+- `POST /comment`
+
+![create-comment](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/5be4f059-e23f-4e7f-ba16-d74015c84294)
+
+- `POST /comment` 400 error - missing comment content
+
+![create-comment-error](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/e59c6bc0-3199-49e5-be03-3183cc63c1f1)
+
+- `PUT /username`
+
+![add-username](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/775f6a71-3efc-4865-a482-b1322702af04)
+
+- `PUT /username` 400 error - missing username
+
+![add-username-error1](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/31a94905-6fd7-4409-b961-0477ae671ee8)
+
+- `PUT /username` 400 error - duplicate username
+
+![add-username-error2](https://github.com/jojo-138/coding-challenge-pure-match/assets/101021415/e0bb556d-3541-430a-b401-a1d0bbacaf5e)

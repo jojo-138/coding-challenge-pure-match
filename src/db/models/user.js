@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
 			User.hasMany(models.Post, {
 				foreignKey: 'userId',
 			});
+			User.hasMany(models.Comment, {
+				foreignKey: 'userId',
+			});
 		}
 	}
 	User.init(
@@ -27,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
 				validate: {
 					isEmail: true,
 				},
+			},
+			username: {
+				type: DataTypes.STRING,
+				unique: true,
 			},
 			hash: {
 				type: DataTypes.STRING,
