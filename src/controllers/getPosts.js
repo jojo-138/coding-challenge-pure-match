@@ -43,7 +43,7 @@ module.exports = async (req, res, client) => {
 
 		return res.send({ posts: postRes });
 	} catch (e) {
-		// console.log(e.message);
+		console.log(e.message);
 		return res.status(500).end();
 	}
 };

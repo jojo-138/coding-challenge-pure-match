@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
 				.send({ status: 'error', message: 'Incorrect credentials. Please try again.' });
 		}
 	} catch (e) {
-		// console.log(e.message);
+		console.log(e.message);
 		return res.status(500).end();
 	}
 };

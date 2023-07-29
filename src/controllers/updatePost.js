@@ -65,7 +65,7 @@ module.exports = async (req, res, client) => {
 
 		return res.status(200).end();
 	} catch (e) {
-		// console.log(e.message);
+		console.log(e.message);
 		await t.rollback();
 		return res.status(500).end();
 	}
