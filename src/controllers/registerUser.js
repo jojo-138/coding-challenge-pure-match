@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
 		});
 
 		return res
-			.cookie('token', token, { httpOnly: true, sameSite: 'none', secure: true }) // sameSite value depends on client domain
+			.cookie('token', token, { httpOnly: true, sameSite: 'none', secure: false }) // sameSite value depends on client domain
 			.status(200)
 			.end();
 	} catch (e) {
