@@ -5,18 +5,19 @@ const Post = require('../db/models').Post;
 const Photo = require('../db/models').Photo;
 
 module.exports = async (req, res, client) => {
+	const { limit, offset } = req.params;
+
 	try {
 		const postRes = [];
 		const posts = await Post.findAll({
 			attributes: ['id', 'title', 'description', 'createdAt'],
-			order: [['createdAt', 'DESC']],
 			include: [
-				{
-					model: User,
-					attributes: ['name'],
-				},
+				{ model: User, attributes: ['name'] },
 				{ model: Photo, attributes: ['id', 'name'] },
 			],
+			order: [['createdAt', 'DESC']],
+			limit,
+			offset: limit * (offset ?? 0),
 		});
 
 		for (const post of posts) {

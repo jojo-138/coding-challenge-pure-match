@@ -9,11 +9,14 @@ const auth = require('./middleware/auth');
 
 const registerUser = require('./controllers/registerUser');
 const loginUser = require('./controllers/loginUser');
+const addUsername = require('./controllers/addUsername');
 const getPosts = require('./controllers/getPosts');
 const createPost = require('./controllers/createPost');
 const updatePost = require('./controllers/updatePost');
 const deletePost = require('./controllers/deletePost');
 const deletePhoto = require('./controllers/deletePhoto');
+const getComments = require('./controllers/getComments');
+const createComment = require('./controllers/createComment');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -38,12 +41,16 @@ app.get('/', async (req, res) => {
 app.get('/logout', (req, res) => res.clearCookie('token').status(200).end());
 app.post('/register', (req, res) => registerUser(req, res));
 app.post('/login', (req, res) => loginUser(req, res));
+app.put('/username', auth, (req, res) => addUsername(req, res));
 
-app.get('/posts', (req, res) => getPosts(req, res, s3Client));
+app.get('/posts/:limit/:offset?', (req, res) => getPosts(req, res, s3Client));
 app.post('/post', auth, (req, res) => createPost(req, res, s3Client));
 app.put('/post', auth, (req, res) => updatePost(req, res, s3Client));
 app.delete('/post', auth, (req, res) => deletePost(req, res, s3Client));
 app.delete('/photos', auth, (req, res) => deletePhoto(req, res, s3Client));
+
+app.get('/comments/:postId/:limit/:offset?', (req, res) => getComments(req, res));
+app.post('/comment', auth, (req, res) => createComment(req, res));
 
 app.listen(port, () => {
 	console.log(`server listening on port ${port}`);
