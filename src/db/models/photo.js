@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-	class Post extends Model {
+	class Photo extends Model {
 		/**
 		 * Helper method for defining associations.
 		 * This method is not a part of Sequelize lifecycle.
@@ -9,36 +9,28 @@ module.exports = (sequelize, DataTypes) => {
 		 */
 		static associate(models) {
 			// define association here
-			Post.belongsTo(models.User, {
-				foreignKey: 'userId',
-				onDelete: 'CASCADE',
-			});
-			Post.hasMany(models.Photo, {
+			Photo.belongsTo(models.Post, {
 				foreignKey: 'postId',
+				onDelete: 'CASCADE',
 			});
 		}
 	}
-	Post.init(
+	Photo.init(
 		{
-			title: {
+			name: {
 				type: DataTypes.STRING,
 				allowNull: false,
+				unique: true,
 			},
-			description: DataTypes.TEXT,
-			photoCount: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-				defaultValue: 0,
-			},
-			userId: {
+			postId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
 		},
 		{
 			sequelize,
-			modelName: 'Post',
+			modelName: 'Photo',
 		}
 	);
-	return Post;
+	return Photo;
 };

@@ -5,7 +5,12 @@ const Post = require('../db/models').Post;
 const Photo = require('../db/models').Photo;
 
 module.exports = async (req, res, client) => {
-	const { title, description } = req.body;
+	/*
+		assuming that old photos and 
+		newly added photos are differentiated by the client
+		and only new photos are sent in the PUT req
+	*/
+	const { id, title, description } = req.body;
 	const photos = req.files ? Object.values(req.files) : [];
 
 	if (!title)
@@ -15,15 +20,15 @@ module.exports = async (req, res, client) => {
 
 	const t = await sequelize.transaction();
 	try {
-		// create new post
-		const newPost = await Post.create(
+		await Post.update(
 			{
 				title,
 				description,
-				userId: req.userId,
-				photoCount: photos.length,
 			},
-			{ transaction: t }
+			{
+				where: { id },
+				transaction: t,
+			}
 		);
 
 		if (photos.length) {
@@ -34,12 +39,21 @@ module.exports = async (req, res, client) => {
 
 				photoBulk.push({
 					name: photo.name,
-					postId: newPost.id,
+					postId: id,
 				});
 			}
 
 			// add photo name to db
 			await Photo.bulkCreate([...photoBulk], { transaction: t });
+
+			await Post.increment(
+				{ photoCount: photos.length },
+				{
+					where: { id },
+					transaction: t,
+					returning: false,
+				}
+			);
 
 			// upload photo to storage
 			photos.forEach(async (photo) => {

@@ -11,6 +11,9 @@ const registerUser = require('./controllers/registerUser');
 const loginUser = require('./controllers/loginUser');
 const getPosts = require('./controllers/getPosts');
 const createPost = require('./controllers/createPost');
+const updatePost = require('./controllers/updatePost');
+const deletePost = require('./controllers/deletePost');
+const deletePhoto = require('./controllers/deletePhoto');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -38,6 +41,9 @@ app.post('/login', (req, res) => loginUser(req, res));
 
 app.get('/posts', (req, res) => getPosts(req, res, s3Client));
 app.post('/post', auth, (req, res) => createPost(req, res, s3Client));
+app.put('/post', auth, (req, res) => updatePost(req, res, s3Client));
+app.delete('/post', auth, (req, res) => deletePost(req, res, s3Client));
+app.delete('/photos', auth, (req, res) => deletePhoto(req, res, s3Client));
 
 app.listen(port, () => {
 	console.log(`server listening on port ${port}`);
