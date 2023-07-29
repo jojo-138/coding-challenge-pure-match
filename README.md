@@ -16,7 +16,7 @@
 - Bcrypt is used to hash password given by user.
 - User credential data is assumed to be sent inside `req.body` using raw `JSON` format.
 - `jsonwebtoken` is used to sign and verify JWTs.
-- JWT are stored in `cookies`. The `cookies` have attributes `httpOnly`, `sameSite`, and `secure` to prevent XSS attacks and possibly CSRF attacks depending on client domain. CORS can also be implemented for a specific client to prevent CSRF attacks.
+- JWT are stored in `cookies`. The `cookies` have attributes `httpOnly`, `sameSite`, and `secure` to prevent XSS attacks and possibly CSRF attacks depending on client domain. CORS can also be implemented for a specific client to prevent CSRF attacks. (**NOTE**: Since the deployed site runs on HTTP, `secure` attribute is set to false)
 - Invalid JWT can be stored to database, if desired.
 - AWS S3 is used to store photos when supplied by user and photo name is saved to database.
 
